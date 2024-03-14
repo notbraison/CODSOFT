@@ -1,0 +1,33 @@
+<!-- main page of blog -->
+<%- include('./includes/header.ejs') %>
+<%- include('./includes/navbar.ejs') %>
+<section class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-10">
+                <% if (posts.length > 0) { %>
+                    <% posts.forEach(post => { %>                      
+                            <div class="card">
+                                <a href="/post/<%= post._id %>" class="btn btn-primary">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%= post.title %></h5>
+                                        <div style="overflow:hidden; white-space:nowrap; max-height:80px; text-overflow:clip;">
+                                            <p class='card-text'>  <%- post.description %>  </p>
+                                        </div>
+                                        <% if (post.author === isAuth) { %>
+                                            <p>Action</p>
+                                            <form action="/post-delete" method="POST" class="login-form">
+                                                <input type="hidden" value="<%= post._id %>" name="postId">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                <button class="submit-button" type="submit">Delete</button>
+                                            </form>
+                                        <% } else { %>
+                                        <% } %>
+                                    </div>
+                                </a>
+                            </div>
+                            <% }) %>                    
+                <% } else { %>     <h1>No posts</h1>    <% } %>
+            </div>
+            <div class="col-lg-2">
+                      </div>        </div></section>

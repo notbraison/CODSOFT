@@ -1,0 +1,28 @@
+<%- include('./includes/header.ejs') %>
+<%- include('./includes/navbar.ejs') %>
+
+<section class="main-content">
+    <div class="container-fluid">
+        <div class=""col-lg-10>
+            <h1><%= pageTitle %></h1>
+            <% if (post.author == isAuth){ %>
+
+                <%- post.description %>
+                <form action="/post-update" method="POST" class="login-form">
+                    <label for="title" >Title</label>
+                    <input type="title" name="title" id="title">
+                    <label for="description" >description</label>
+                    <input type="hidden" value="<%= post._id %>" name="postId">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                    <button type="submit" class="submit-button">Create</button>    
+                            
+
+                </form>
+
+            <% }else{ %>
+            <%- post.description %>
+           <% } %>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,39 @@
+Reactive frontend for React 
+
+Frontend projects have a lot in common
+1. HomePage /Welcome HomePage
+2.Auth Pages i.e login , register, password reset
+3.Header/Footer Component
+4.State Management RTK
+5.Dashboad for admin or user
+6.User Profile etc.
+
+tools
+Redox for State Management
+Styling scss
+hosting vercel
+
+e.g MERN stack digital e-commerce website
+
+use vite or nextjs , doesnt matter which , understand how react works
+npx create-next-app@latest ./ // ../ is used ot create within the folder rather than new folder
+
+install dependencies
+npm i react-icons sass react-redux @reduxjs/toolkit
+
+update with
+npm update
+npm install react-scripts --save-dev
+rm -rf node_modules     
+npm install
+npm update react-scripts
+
+start with npm run start
+
+delete App.test ,logo.svg, reportwebvitals,setuptest, 
+go to indexjs remove them at top n bottom of Pages , if using vite index.js is main.jsx
+goto App.js and delete all ,use Rafce to create a new template
+got index.css paste given styles from course
+
+
+npm i react-router-dom
