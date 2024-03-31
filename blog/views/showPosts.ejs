@@ -1,0 +1,45 @@
+<%- include('./includes/header.ejs') %>
+<%- include('./includes/navbar.ejs') %>
+
+<section class="main-content" style="background-color: #ffffff;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <% if (posts.length > 0) { %>
+                    <% posts.forEach(post => { %>
+                        <% if (post && post._id) { %> <!-- Add a conditional check -->
+                            <div class="card mb-6" style="border-radius: 15px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); background-color: #f8f9fa;">
+                                <a href="/post/<%= post._id %>" style="text-decoration: none; color: #212529;">
+                                    <div class="card-body" style="border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); color: #343a40; background-color: #ffffff;">
+                                        <h5 class="card-title mb-3" style="color: #007bff; text-transform: capitalize; text-align: center;"><%= post.title %></h5>
+                                        <p class="card-text overflow-ellipsis mb-3" style="color: #343a40;"><%- post.description %></p>
+
+                                        
+
+                                        <% if (post.author && post.author._id && post.author._id.toString() === isAuth) { %>
+                                            <div class="mt-3">
+                                                <form action="/post-delete" method="POST">
+                                                    <input type="hidden" value="<%= post._id %>" name="postId">
+                                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                                    <button class="btn btn-danger" type="submit">Delete</button>
+                                                </form>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </a>
+                            </div>
+                        <% } %>
+                    <% }) %>
+                <% } else { %>
+                    <div class="alert alert-danger" role="alert" style="border-radius: 15px;">
+                        No posts available
+                    </div>
+                <% } %>
+            </div>
+            <div class="col-lg-4">
+                <!-- Sidebar content here -->
+            </div>
+        </div>
+    </div>
+</section>
+<%- include('./includes/footer.ejs') %>

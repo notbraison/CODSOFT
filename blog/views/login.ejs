@@ -1,0 +1,29 @@
+<%- include('./includes/header.ejs') %>
+<%- include('./includes/navbar.ejs') %>
+
+<section class="main-content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg p-4" style="background-color: #f8f9fa;">
+                    <h2 class="text-center mb-4" style="color: #007bff;">Login Form</h2>
+                    <form action="/login" method="POST" class="login-form">
+                        <div class="form-group">
+                            <label for="email" style="color: #343a40;">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" style="background-color: #ffffff; color: #495057;" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" style="color: #343a40;">Password</label>
+                            <input type="password" id="password" name="password" class="form-control" style="background-color: #ffffff; color: #495057;" required>
+                        </div>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" required>
+                        <button type="submit" class="btn btn-primary btn-block mt-4" style="background-color: #28a745; border-color: #28a745;">Login</button>
+                    </form>
+                    <% if(error !== "") { %>
+                        <p class="text-center text-danger mt-3"><%= error %></p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

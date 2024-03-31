@@ -1,0 +1,22 @@
+<%- include('./includes/header.ejs') %>
+<%- include('./includes/navbar.ejs') %>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="./userProfile.css">
+</head>
+<body>
+    <div class="profile-header">
+        <img src="./images/profile-default-svgrepo-com.svg" alt="Profile Image" class="profile-image">
+        <h1>User Profile</h1>
+    </div>
+    <div class="profile-details">
+        <br>
+        <p>Name: <%= user.name %></p>
+        <p>Email: <%= user.email %></p>
+        <p>Number of Posts: <%= postCount %></p> <!-- Display the post count -->
+
+    </div>
+</body>

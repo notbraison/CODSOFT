@@ -1,0 +1,39 @@
+<%- include('./includes/header.ejs') %>
+<%- include('./includes/navbar.ejs') %>
+
+<section class="main-content" style="background-color: #f0f0f0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card border-0 shadow-lg p-4" style="background-color: #fff; border-radius: 15px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
+                    <h2 class="text-primary mb-4 text-center">Hello, <%= user %>!</h2>
+                    <form action="/create-post" method="POST" class="login-form">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="title" class="text-primary">Title</label>
+                                    <input type="text" id="title" name="title" class="form-control form-control-lg" required style="background-color: #f8f9fa;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <label for="description" class="text-primary">Description</label>
+                                    <textarea id="description" name="description" class="form-control form-control-lg" rows="12" required style="background-color: #f8f9fa;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="author" value="<%= id %>" required>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" required>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg mt-4" style="background-color: #28a745; border-color: #28a745;">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
