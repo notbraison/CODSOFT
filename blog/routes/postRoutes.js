@@ -129,19 +129,43 @@ router.post('/post-delete', async (req, res) => {
 
 
 
-router.post('/post-update', async(req,res)=>{
+router.post('/post-update', async (req, res) => {
     try {
-        const post = await post.findById(req.body.postId)
+        const postId = req.body.postId;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
         await post.updateOne({
-            title:req.body.title || post.title,
-            description:req.body.description || post.description,
-        })
-        res.redirct('/')
-        
+            title: req.body.title || post.title,
+            description: req.body.description || post.description,
+        });
+        res.redirect('/');
     } catch (error) {
-        throw new Error('error')        
+        console.error('Error updating post:', error);
+        res.status(500).send('Internal Server Error');
     }
-})
+});
+
+router.get('/edit-post/:postId', async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        // Retrieve the post by its ID from the database
+        const post = await Post.findById(postId);
+        if (!post) {
+            // If the post is not found, return a 404 error
+            return res.status(404).send('Post not found');
+        }
+        // Render the edit post page and pass the post data to the view
+        res.render('editPost', { post });
+    } catch (error) {
+        // If an error occurs, log the error and send a 500 status code
+        console.error('Error fetching post for editing:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 
 router.get('/search', async (req, res) => {
     try {
