@@ -1,30 +1,165 @@
-<%- include('./includes/header.ejs') %>
-<%- include('./includes/navbar.ejs') %>
+<%- include('./includes/header.ejs') %> <%- include('./includes/navbar.ejs') %>
 
-<section class="main-content" style="background-color: #ffffff;">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-12"> 
-                <div class="card border-0 shadow-lg p-4" style="background-color: #f8f9fa;">
-                    <h1 class="text-center mb-4" style="color: #007bff;"><%= pageTitle %></h1>
-                    <% if (post.author && post.author._id && post.author._id.toString() === isAuth) { %>
-                        <form action="/post-update" method="POST" class="form">
-                            <p style="color: #000000; font-size: 1.2rem;"><%= post.description %></p>
-                            <div class="mt-3">
-                                <input type="hidden" value="<%= post._id %>" name="postId">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <button type="submit" class="btn btn-primary btn-block" style="background-color: #28a745; border-color: #28a745;">Update</button> 
-                            </div>
-                        </form>
-                    <% } else { %>
-                        <div class="card border-0 shadow-lg p-4" style="background-color: #f8f9fa;">
-                            <p class="text-center" style="color: #000000; font-size: 1.2rem;"><%= post.description %></p>
-                        </div>
-                    <% } %>
+<section class="main-content" style="background-color: #ffffff">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-12">
+        <div
+          class="card border-0 shadow-lg p-4"
+          style="background-color: #f8f9fa"
+        >
+          <h1 class="text-center mb-4" style="color: #007bff">
+            <%= pageTitle %>
+          </h1>
+          <% if (post.author && post.author._id && post.author._id.toString()
+          === isAuth) { %>
+          <form action="/post-update" method="POST" class="form">
+            <p style="color: #000000; font-size: 1.2rem">
+              <%= post.description %>
+            </p>
+            <div class="mt-3">
+              <input type="hidden" value="<%= post._id %>" name="postId" />
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <button
+                type="submit"
+                class="btn btn-primary btn-block"
+                style="background-color: #28a745; border-color: #28a745"
+              >
+                Update
+              </button>
+            </div>
+          </form>
+          <% } else { %>
+          <div
+            class="card border-0 shadow-lg p-4"
+            style="background-color: #f8f9fa"
+          >
+            <p class="text-center" style="color: #000000; font-size: 1.2rem">
+              <%= post.description %>
+            </p>
+          </div>
+          <% } %>
+        </div>
+
+        <div class="comments-section mt-4">
+    <h2 class="text-primary mb-3">Comments</h2>
+    <% if (comments.length > 0) { %>
+        <% comments.forEach(function(comment) { %>
+            <div class="card border-0 shadow-sm mb-3" style="background-color: #ffffff; border-radius: 10px;">
+                <div class="card-body">
+                    <p style="color: #333333;"><strong><%= comment.author.name %>:</strong> <%= comment.content %></p>
+                    <small class="text-muted"><%= comment.createdAt.toLocaleString() %></small>
                 </div>
             </div>
+        <% }); %>
+    <% } else { %>
+        <p>No comments yet.</p>
+    <% } %>
+</div>
+
+
+        <div>
+          <button class="btn btn-primary" id="openButton">Add Comments</button>
         </div>
+
+        <!-- The form -->
+        <div class="modal" id="commentModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Add Comment</h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  id="closeButton"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <form
+                  id="commentForm"
+                  method="POST"
+                  class="needs-validation"
+                  novalidate
+                >
+                  <div class="mb-3">
+                    <label for="content" class="form-label">Comment:</label>
+                    <textarea
+                      id="content"
+                      name="content"
+                      class="form-control"
+                      rows="6"
+                      required
+                    ></textarea>
+                    <div class="invalid-feedback">Please enter a comment.</div>
+                  </div>
+                  <input type="hidden" value="<%= post._id %>" name="postId" />
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button type="submit" class="btn btn-primary">Comment</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="closeButtonModal"
+                  >
+                    Close
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const commentForm = document.getElementById("commentForm");
+            const postId = "<%= post._id %>"; // Get the postId from your server-side template
+
+            // Dynamically set the action URL of the form
+            commentForm.action = `/post/${postId}/comment`;
+          });
+
+          document.addEventListener("DOMContentLoaded", function () {
+            const openButton = document.getElementById("openButton");
+            const closeButton = document.getElementById("closeButton");
+            const closeButtonModal =
+              document.getElementById("closeButtonModal");
+            const commentModal = new bootstrap.Modal(
+              document.getElementById("commentModal")
+            );
+
+            openButton.addEventListener("click", function () {
+              commentModal.show();
+            });
+
+            closeButton.addEventListener("click", function () {
+              commentModal.hide();
+            });
+
+            closeButtonModal.addEventListener("click", function () {
+              commentModal.hide();
+            });
+
+            // Add form validation feedback
+            const commentForm = document.querySelector("form.needs-validation");
+            const commentContent = document.getElementById("commentContent");
+
+            commentForm.addEventListener("submit", function (event) {
+              if (!commentForm.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+
+              // Show validation feedback
+              commentContent.classList.add("is-invalid");
+            });
+
+            commentContent.addEventListener("input", function () {
+              // Hide validation feedback when user starts typing
+              commentContent.classList.remove("is-invalid");
+            });
+          });
+        </script>
+      </div>
     </div>
+  </div>
 </section>
 
 <%- include('./includes/footer.ejs') %>

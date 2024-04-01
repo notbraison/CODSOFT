@@ -158,4 +158,21 @@ body {
     cursor: pointer;
   }
   
-  
+  /* comments */
+
+  .comments-section {
+    background-color: #f8f9fa; /* Light gray background */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.card {
+    background-color: #ffffff; /* White background */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Increase shadow on hover */
+}

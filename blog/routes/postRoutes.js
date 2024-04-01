@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const User = require('../db/models/userModel')
 const Post = require('../db/models/postModel')
+const Comment = require('../db/models/commentModel')
 const isAuth = require('../middleware/isAuth')
 
 router.get('/create-post',   isAuth.authenticateToken,   async (req, res) => {
@@ -21,7 +22,7 @@ router.get('/create-post',   isAuth.authenticateToken,   async (req, res) => {
 router.post('/create-post', isAuth.authenticateToken, async (req, res) => {
     try {
         // Ensure that the user is logged in and the userId is available in the session
-        const userId = req.user; // Use req.user provided by the authenticateToken middleware
+        const userId = await User.findById({ _id: req.user }); // Use req.user provided by the authenticateToken middleware
 
         if (!userId) {
             // If the user is not logged in, redirect to the login page or handle accordingly
@@ -43,8 +44,8 @@ router.post('/create-post', isAuth.authenticateToken, async (req, res) => {
 
         // Save the new post to the database
         await newPost.save();
-        console.log("post created successfully")
-        console.log("posttitle: "+newPost.title," postauthor: "+newPost.author)
+        
+        //alert("posttitle: "+newPost.title," postauthor: "+newPost.author)
 
         // Redirect to the home page or display a success message
         res.redirect('/');
@@ -72,9 +73,38 @@ router.get('/', async(req,res) =>{
     }
 })
 
+
+
+
+router.get('/post/:postId', async (req, res) => {
+    try {
+        const postId = req.params.postId; // Retrieve postId from URL params
+
+        // Find the post by ID
+        const post = await Post.findById(postId).populate('author');
+        if (!post) {
+            return res.status(404).send('Post not found');
+        }
+
+        // Find comments associated with the post
+        const comments = await Comment.find({ postId }).populate('author');
+
+        // Define pageTitle variable
+        const pageTitle = post.title; // Assuming post has a title property
+
+        // Render the postDetail template with post, comments, and pageTitle data
+        res.render('postDetail', { post, comments, pageTitle });
+    } catch (error) {
+        console.error('Error fetching post detail:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
+
 router.post('/post-delete', async (req, res) => {
     try {
-        const postId = req.body.postid;
+        const postId = req.body.postId;
         // Check if postId is valid
         if (!postId) {
             return res.status(400).send('Post ID is required');
@@ -98,16 +128,6 @@ router.post('/post-delete', async (req, res) => {
 });
 
 
-router.get('/post/:postId',async(req,res)=>{
-    const postId = req.params.postId
-    await Post.findById(postId).then(post=> {
-        res.render("postDetail",{
-            post:post,
-            pageTitle: post.title,
-            path:"/post"
-        })
-    }).catch(error => {throw new Error(error)})
-})
 
 router.post('/post-update', async(req,res)=>{
     try {
@@ -136,6 +156,31 @@ router.get('/search', async (req, res) => {
         res.status(500).send(error.message);
     }
 });
+
+// Route to handle comment submission
+router.post('/post/:postId/comment',isAuth.authenticateToken, async (req, res) => {
+    try {
+        const { content } = req.body;
+        const postId = req.params.postId; // Retrieve postId from URL params
+        const author = req.user; // Use req.user provided by the authenticateToken middleware
+
+        // Create a new comment object
+        const newComment = new Comment({
+            content,
+            author,
+            postId
+        });
+
+        // Save the new comment to the database
+        await newComment.save();
+
+        res.redirect(`/post/${postId}`);
+    } catch (error) {
+        console.error('Error submitting comment:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 
 
 module.exports = router

@@ -71,7 +71,7 @@ router.get('/user-profile', isAuth.authenticateToken, async (req, res) => {
             return res.status(404).send('User not found');
         }
         // Count the number of posts for the current user
-        const postCount = await Post.countDocuments({ userId: userId });
+        const postCount = await Post.countDocuments({ author: userId }); // Use `author` instead of `userId`
 
         res.render('userProfile', { user, postCount });
     } catch (error) {
@@ -79,6 +79,7 @@ router.get('/user-profile', isAuth.authenticateToken, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 router.get('/logout', (req, res) => {
     // Clear authentication token cookie
